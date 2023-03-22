@@ -1,0 +1,23 @@
+﻿@model Login;
+
+<form method="post" asp-controller="Login" asp-action="Login">
+	<label asp-for="Username">Username</label><br>
+	<input type="email" asp-for="Username" placeholder="Username Account" required>
+	<br><br>
+	<label asp-for="Password">Password</label><br>
+	<input type="password" asp-for="Password" placeholder="Enter Password" required>
+	<br><br>
+	<button type="submit">Login</button>
+</form>
+
+@{
+	if (TempData["Message"] is not null)
+	{
+		<br>
+		<h6 style="color:red">@TempData["Message"]</h6>
+	}
+}
+<br>
+<a asp-controller="Account" asp-action="ForgotPasswordRequest">Forgot Password</a>
+<br>
+<a asp-controller="Account" asp-action="Register">Create Account</a>
