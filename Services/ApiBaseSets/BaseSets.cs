@@ -1,22 +1,23 @@
 ﻿using Newtonsoft.Json;
-using SimpleClientServices.Models.Login;
 using System.Text.Json;
 using System.Text;
-using System.Net.Http;
 
 namespace SimpleClientServices.Services.ApiBaseSets
 {
 	public class BaseSets<T> : IBaseSets<T> where T : class
 	{
 
-		private readonly IHttpContextAccessor _httpContextAccessor;
-		private readonly HttpClient _httpClient;
-		private HttpClient httpClient;
+		protected readonly IHttpContextAccessor _httpContextAccessor;
+		protected readonly HttpClient _httpClient;
+		protected readonly IConfiguration _Config;
+		protected string host;
 
-		public BaseSets(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+		public BaseSets(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration config)
 		{
 			_httpContextAccessor = httpContextAccessor;
 			_httpClient = httpClient;
+			_Config = config;
+			host = _Config.GetSection("ApiPessoalUrl").Value;
 		}
 
 		public HttpRequestMessage RequestApiSet(string RequestMethod, string TargetUri, object RequestContent)
@@ -47,7 +48,7 @@ namespace SimpleClientServices.Services.ApiBaseSets
 		public async Task<T> RefreshAcess()
 		{
 			var RefRequest =RequestApiSet("Post",
-				"https://localhost:7005/api/Login/RefreshLogin",
+				$"{host}/api/Login/RefreshLogin",
 				_httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
 
 			RefRequest = BearerSet(RefRequest, _httpContextAccessor.HttpContext.Request.Cookies["TKR"]);

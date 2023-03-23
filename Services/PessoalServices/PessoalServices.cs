@@ -1,26 +1,21 @@
-﻿using SimpleClientServices.Models.Login;
-using SimpleClientServices.Models.Pessoal;
+﻿using SimpleClientServices.Models.Pessoal;
 using SimpleClientServices.Services.ApiBaseSets;
 using SimpleClientServices.Services.LoginServices;
-using System.Text.Json;
 
 namespace SimpleClientServices.Services.PessoalServices
 {
     public class PessoalServices : BaseSets<PessoalResponse>, IPessoalServices 
     {
-        private readonly HttpClient _httpClient;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILoginServices _loginServices;
 
-
-        public PessoalServices(HttpClient httpClient,
-                                            IHttpContextAccessor httpContextAccessor,
-                                            ILoginServices loginServices) : base (httpClient, httpContextAccessor)
+		public PessoalServices(HttpClient httpClient,
+                                            IHttpContextAccessor httpContextAccessor, IConfiguration config,
+                                            ILoginServices loginServices) : base (httpClient, httpContextAccessor, config)
         {
-            _httpClient = httpClient;
-            _httpContextAccessor = httpContextAccessor;
             _loginServices = loginServices;
-        }
+		}
+
+
 
         public async Task<PessoalResponse> TakePessoalON()
         {
@@ -29,7 +24,7 @@ namespace SimpleClientServices.Services.PessoalServices
 				return PessoaFail();
 
 
-            var requestM = RequestApiSet("Get", "https://localhost:7005/api/Usuario", null);
+            var requestM = RequestApiSet("Get", $"{host}/api/Usuario", null);
 
 			requestM =  BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
 
@@ -45,7 +40,159 @@ namespace SimpleClientServices.Services.PessoalServices
 
         }
 
-        private async Task<PessoalResponse> FailResponse()
+
+
+		public async Task<PessoalResponse> TakePessoalOFF()
+		{
+
+			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
+				return PessoaFail();
+
+
+			var requestM = RequestApiSet("Get", $"{host}/api/Usuario/Desativados", null);
+
+			requestM = BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
+
+			var response = await _httpClient.SendAsync(requestM);
+
+			if ((int)response.StatusCode == 401)
+				return await FailResponse();
+
+
+			var pessoa = DesJson(response);
+
+			return pessoa.Result;
+
+		}
+
+
+
+		public async Task<PessoalResponse> TakePessoa(int id)
+		{
+
+			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
+				return PessoaFail();
+
+
+			var requestM = RequestApiSet("Get", $"{host}/api/Usuario/{id}", null);
+
+			requestM = BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
+
+			var response = await _httpClient.SendAsync(requestM);
+
+			if ((int)response.StatusCode == 401)
+				return await FailResponse();
+
+
+			var pessoa = DesJson(response);
+
+			return pessoa.Result;
+
+		}
+
+
+
+		public async Task<PessoalResponse> SetPessoaOFF(int id)
+		{
+
+			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
+				return PessoaFail();
+
+
+			var requestM = RequestApiSet("Get", $"{host}/api/Usuario/Desativar/{id}", null);
+
+			requestM = BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
+
+			var response = await _httpClient.SendAsync(requestM);
+
+			if ((int)response.StatusCode == 401)
+				return await FailResponse();
+
+
+			var pessoa = DesJson(response);
+
+			return pessoa.Result;
+
+		}
+
+
+
+		public async Task<PessoalResponse> DeletePessoa(int id)
+		{
+
+			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
+				return PessoaFail();
+
+
+			var requestM = RequestApiSet("Delete", $"{host}/api/Usuario/{id}", null);
+
+			requestM = BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
+
+			var response = await _httpClient.SendAsync(requestM);
+
+			if ((int)response.StatusCode == 401)
+				return await FailResponse();
+
+
+			var pessoa = DesJson(response);
+
+			return pessoa.Result;
+
+		}
+
+
+
+		public async Task<PessoalResponse> SetPessoa(PessoaSetRequest request)
+		{
+
+			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
+				return PessoaFail();
+
+
+			var requestM = RequestApiSet("Put", $"{host}/api/Usuario", request);
+
+			requestM = BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
+
+			var response = await _httpClient.SendAsync(requestM);
+
+			if ((int)response.StatusCode == 401)
+				return await FailResponse();
+
+
+			var pessoa = DesJson(response);
+
+			return pessoa.Result;
+
+		}
+
+
+
+		public async Task<PessoalResponse> MakePessoa(PessoaRequest request)
+		{
+
+			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
+				return PessoaFail();
+
+
+			var requestM = RequestApiSet("Post", $"{host}/api/Usuario", request);
+
+			requestM = BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
+
+			var response = await _httpClient.SendAsync(requestM);
+
+			if ((int)response.StatusCode == 401)
+				return await FailResponse();
+
+
+			var pessoa = DesJson(response);
+
+			return pessoa.Result;
+
+		}
+
+
+
+		private async Task<PessoalResponse> FailResponse()
         {
 			var result = await _loginServices.ExpToken();
 			if (!result)
