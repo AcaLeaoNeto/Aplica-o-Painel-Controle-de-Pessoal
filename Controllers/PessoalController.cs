@@ -25,24 +25,23 @@ namespace SimpleClientServices.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Pessoa>> ConfirmDelete(int id)
+        public async Task<ActionResult<PessoalResponse>> ConfirmDelete(int id)
         {
-			//var result = await _pessoalServices.TakePessoa(id);
-			//return BaseReturn(result, "ConfirmDelete");
-            return View(await _pessoalServices.TakePessoa(id));
+            var result = await _pessoalServices.TakePessoa(id);
+            return BaseReturn(result, "ConfirmDelete");
         }
 
         [HttpPost]
-        public async Task<ActionResult<PessoalResponse>> Delete(Pessoa reponse)
+        public async Task<ActionResult<PessoalResponse>> Delete(PessoalResponse reponse)
         {
-            var result = await _pessoalServices.DeletePessoa(reponse.ResponseObject.Id) ;
-            return RedirectToAction("Index");
-            //         var FeedReturn = BaseReturn(result, "ConfirmDelete");
+            var result = await _pessoalServices.DeletePessoa(reponse.ResponseObject[0].Id) ;
 
-            //         if (FeedReturn.Equals(View()))
-            //             return RedirectToAction("Index");
+            var FeedReturn = BaseReturn(result, "ConfirmDelete");
 
-            //return FeedReturn;
+            if(FeedReturn.ToString() == "Microsoft.AspNetCore.Mvc.ViewResult")
+                return RedirectToAction("Index");
+
+            return FeedReturn;
         }
 
 

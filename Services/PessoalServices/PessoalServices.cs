@@ -1,4 +1,5 @@
-﻿using SimpleClientServices.Models.Pessoal;
+﻿using SimpleClientServices.Models.Base;
+using SimpleClientServices.Models.Pessoal;
 using SimpleClientServices.Services.ApiBaseSets;
 using SimpleClientServices.Services.LoginServices;
 using System.Text.Json;
@@ -35,7 +36,7 @@ namespace SimpleClientServices.Services.PessoalServices
                 return await ReturnFail(response);
 
             var pessoa = DesJson(response);
-
+			
             return pessoa.Result;
 
         }
@@ -67,11 +68,11 @@ namespace SimpleClientServices.Services.PessoalServices
 
 
 
-		public async Task<Pessoa> TakePessoa(int id)
+		public async Task<PessoalResponse> TakePessoa(int id)
 		{
 
-			//if (Cookies["TKA"] is null || Cookies["TKR"] is null)
-			//	return new PessoalResponse().NewPessoa(401);
+			if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+				return new PessoalResponse().NewPessoa(401);
 
 
 			var requestM = RequestApiSet("Get", $"{host}/api/Usuario/{id}", null);
@@ -80,15 +81,10 @@ namespace SimpleClientServices.Services.PessoalServices
 
 			var response = await _httpClient.SendAsync(requestM);
 
-			//if (!response.IsSuccessStatusCode)
-			//	return await ReturnFail(response);
+			if (!response.IsSuccessStatusCode)
+				return await ReturnFail(response);
 
-            JsonSerializerOptions options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-
-            var content = await response.Content.ReadAsStringAsync();//Converte Json para string
-            var TObject = System.Text.Json.JsonSerializer.Deserialize<Pessoa>(content, options);
-
-            var pessoa = TObject;
+			var pessoa = DesJson(response).Result;
 
 			return pessoa;
 
