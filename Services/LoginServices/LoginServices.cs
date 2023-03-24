@@ -52,8 +52,8 @@ namespace SimpleClientServices.Services.LoginServices
 
 		private void CreateCookieLogToken(LoginResponse response)
 		{
-			CookieSet("TKA", response.ResponseObject.AcessToken, 10);
-			CookieSet("TKR", response.ResponseObject.RefreshToken, 20);
+			CookieSet("TKA", response.ResponseObject.AcessToken, 1);
+			CookieSet("TKR", response.ResponseObject.RefreshToken, 1);
 		}
 	}
 }

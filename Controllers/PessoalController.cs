@@ -24,8 +24,30 @@ namespace SimpleClientServices.Controllers
             return BaseReturn(result, "Index");
         }
 
+        [HttpGet]
+        public async Task<ActionResult<Pessoa>> ConfirmDelete(int id)
+        {
+			//var result = await _pessoalServices.TakePessoa(id);
+			//return BaseReturn(result, "ConfirmDelete");
+            return View(await _pessoalServices.TakePessoa(id));
+        }
 
-        private ActionResult BaseReturn(PessoalResponse result, string callFunc)
+        [HttpPost]
+        public async Task<ActionResult<PessoalResponse>> Delete(Pessoa reponse)
+        {
+            var result = await _pessoalServices.DeletePessoa(reponse.ResponseObject.Id) ;
+            return RedirectToAction("Index");
+            //         var FeedReturn = BaseReturn(result, "ConfirmDelete");
+
+            //         if (FeedReturn.Equals(View()))
+            //             return RedirectToAction("Index");
+
+            //return FeedReturn;
+        }
+
+
+
+		private ActionResult BaseReturn(PessoalResponse result, string callFunc)
         {
 			if (result is null)
 			{

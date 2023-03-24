@@ -1,0 +1,24 @@
+ @model Pessoa;
+@{
+    ViewData["Title"] = "Deleter";
+} 
+
+<form method="Post" asp-controller="Pessoal" asp-action="Delete">
+	<input type="hidden" asp-for="ResponseObject.Id" value="@Model.ResponseObject.Id"><br><br>
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+			<h2 class="text-primary">Deletar Contato</h2>
+			<hr />
+		</div>
+        <div class="mb-3">
+			<label asp-for="ResponseObject.Id"></label>
+			<input asp-for="ResponseObject.Id" disabled class="form-control" />
+	    </div>
+        <div class="mb-5">
+			<label asp-for="ResponseObject.Name"></label>
+			<input asp-for="ResponseObject.Name" disabled class="form-control" />
+		</div>
+        <button type="submit" class="btn btn-danger">Deletar</button>
+        <a class="btn btn-secondary" asp-controller="Pessoal" asp-action="Index">Voltar</a>
+    </div>
+</form>

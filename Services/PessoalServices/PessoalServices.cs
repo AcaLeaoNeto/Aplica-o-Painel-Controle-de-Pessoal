@@ -1,6 +1,7 @@
 ﻿using SimpleClientServices.Models.Pessoal;
 using SimpleClientServices.Services.ApiBaseSets;
 using SimpleClientServices.Services.LoginServices;
+using System.Text.Json;
 
 namespace SimpleClientServices.Services.PessoalServices
 {
@@ -19,20 +20,19 @@ namespace SimpleClientServices.Services.PessoalServices
 
         public async Task<PessoalResponse> TakePessoalON()
         {
+
+			if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+				return new PessoalResponse().NewPessoa(401);
             
-			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
-				return PessoaFail();
-
-
+				
             var requestM = RequestApiSet("Get", $"{host}/api/Usuario", null);
 
-			requestM =  BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
+			requestM =  BearerSet(requestM, Cookies["TKA"]);
 
             var response = await _httpClient.SendAsync(requestM);
-            
-            if ((int)response.StatusCode == 401)
-                return await FailResponse();
 
+			if (!response.IsSuccessStatusCode)
+                return await ReturnFail(response);
 
             var pessoa = DesJson(response);
 
@@ -42,96 +42,100 @@ namespace SimpleClientServices.Services.PessoalServices
 
 
 
-		public async Task<PessoalResponse> TakePessoalOFF()
+		//public async Task<PessoalResponse> TakePessoalOFF()
+		//{
+
+		//	if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+		//		return new PessoalResponse(401);
+
+
+		//	var requestM = RequestApiSet("Get", $"{host}/api/Usuario/Desativados", null);
+
+		//	requestM = BearerSet(requestM, Cookies["TKA"]);
+
+		//	var response = await _httpClient.SendAsync(requestM);
+
+		//	if (!response.IsSuccessStatusCode)
+		//		return await ReturnFail(response);
+
+
+		//	var pessoa = DesJson(response);
+
+		//	return pessoa.Result;
+
+		//}
+
+
+
+		public async Task<Pessoa> TakePessoa(int id)
 		{
 
-			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
-				return PessoaFail();
-
-
-			var requestM = RequestApiSet("Get", $"{host}/api/Usuario/Desativados", null);
-
-			requestM = BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
-
-			var response = await _httpClient.SendAsync(requestM);
-
-			if ((int)response.StatusCode == 401)
-				return await FailResponse();
-
-
-			var pessoa = DesJson(response);
-
-			return pessoa.Result;
-
-		}
-
-
-
-		public async Task<PessoalResponse> TakePessoa(int id)
-		{
-
-			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
-				return PessoaFail();
+			//if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+			//	return new PessoalResponse().NewPessoa(401);
 
 
 			var requestM = RequestApiSet("Get", $"{host}/api/Usuario/{id}", null);
 
-			requestM = BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
+			requestM = BearerSet(requestM, Cookies["TKA"]);
 
 			var response = await _httpClient.SendAsync(requestM);
 
-			if ((int)response.StatusCode == 401)
-				return await FailResponse();
+			//if (!response.IsSuccessStatusCode)
+			//	return await ReturnFail(response);
 
+            JsonSerializerOptions options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
 
-			var pessoa = DesJson(response);
+            var content = await response.Content.ReadAsStringAsync();//Converte Json para string
+            var TObject = System.Text.Json.JsonSerializer.Deserialize<Pessoa>(content, options);
 
-			return pessoa.Result;
+            var pessoa = TObject;
+
+			return pessoa;
 
 		}
 
 
 
-		public async Task<PessoalResponse> SetPessoaOFF(int id)
-		{
+		//public async Task<PessoalResponse> SetPessoaOFF(int id)
+		//{
 
-			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
-				return PessoaFail();
-
-
-			var requestM = RequestApiSet("Get", $"{host}/api/Usuario/Desativar/{id}", null);
-
-			requestM = BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
-
-			var response = await _httpClient.SendAsync(requestM);
-
-			if ((int)response.StatusCode == 401)
-				return await FailResponse();
+		//	if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+		//		return new PessoalResponse(401);
 
 
-			var pessoa = DesJson(response);
+		//	var requestM = RequestApiSet("Get", $"{host}/api/Usuario/Desativar/{id}", null);
 
-			return pessoa.Result;
+		//	requestM = BearerSet(requestM, Cookies["TKA"]);
 
-		}
+		//	var response = await _httpClient.SendAsync(requestM);
+
+		//	if (!response.IsSuccessStatusCode)
+		//		return await ReturnFail(response);
+
+
+		//	var pessoa = DesJson(response);
+
+		//	return pessoa.Result;
+
+		//}
 
 
 
 		public async Task<PessoalResponse> DeletePessoa(int id)
 		{
 
-			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
-				return PessoaFail();
+			if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+                return new PessoalResponse().NewPessoa(401);
 
 
-			var requestM = RequestApiSet("Delete", $"{host}/api/Usuario/{id}", null);
+            var requestM = RequestApiSet("Delete", $"{host}/api/Usuario/{id}", null);
 
-			requestM = BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
+			requestM = BearerSet(requestM, Cookies["TKA"]);
 
 			var response = await _httpClient.SendAsync(requestM);
 
-			if ((int)response.StatusCode == 401)
-				return await FailResponse();
+			if (!response.IsSuccessStatusCode)
+				return await ReturnFail(response);
 
 
 			var pessoa = DesJson(response);
@@ -142,53 +146,53 @@ namespace SimpleClientServices.Services.PessoalServices
 
 
 
-		public async Task<PessoalResponse> SetPessoa(PessoaSetRequest request)
-		{
+		//public async Task<PessoalResponse> SetPessoa(PessoaSetRequest request)
+		//{
 
-			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
-				return PessoaFail();
-
-
-			var requestM = RequestApiSet("Put", $"{host}/api/Usuario", request);
-
-			requestM = BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
-
-			var response = await _httpClient.SendAsync(requestM);
-
-			if ((int)response.StatusCode == 401)
-				return await FailResponse();
+		//	if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+		//		return new PessoalResponse(401);
 
 
-			var pessoa = DesJson(response);
+		//	var requestM = RequestApiSet("Put", $"{host}/api/Usuario", request);
 
-			return pessoa.Result;
+		//	requestM = BearerSet(requestM, Cookies["TKA"]);
 
-		}
+		//	var response = await _httpClient.SendAsync(requestM);
 
-
-
-		public async Task<PessoalResponse> MakePessoa(PessoaRequest request)
-		{
-
-			if (_httpContextAccessor.HttpContext.Request.Cookies["TKA"] is null)
-				return PessoaFail();
+		//	if (!response.IsSuccessStatusCode)
+		//		return await ReturnFail(response);
 
 
-			var requestM = RequestApiSet("Post", $"{host}/api/Usuario", request);
+		//	var pessoa = DesJson(response);
 
-			requestM = BearerSet(requestM, _httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
+		//	return pessoa.Result;
 
-			var response = await _httpClient.SendAsync(requestM);
-
-			if ((int)response.StatusCode == 401)
-				return await FailResponse();
+		//}
 
 
-			var pessoa = DesJson(response);
 
-			return pessoa.Result;
+		//public async Task<PessoalResponse> MakePessoa(PessoaRequest request)
+		//{
 
-		}
+		//	if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+		//		return new PessoalResponse(401);
+
+
+		//	var requestM = RequestApiSet("Post", $"{host}/api/Usuario", request);
+
+		//	requestM = BearerSet(requestM, Cookies["TKA"]);
+
+		//	var response = await _httpClient.SendAsync(requestM);
+
+		//	if (!response.IsSuccessStatusCode)
+		//              return await ReturnFail(response);
+
+
+		//	var pessoa = DesJson(response);
+
+		//	return pessoa.Result;
+
+		//}
 
 
 
@@ -199,17 +203,22 @@ namespace SimpleClientServices.Services.PessoalServices
 			{
 				_httpContextAccessor.HttpContext.Response.Cookies.Delete("TKR");
 				_httpContextAccessor.HttpContext.Response.Cookies.Delete("TKA");
-				return PessoaFail();
-			}
+				
+                return new PessoalResponse().NewPessoa(401);
+            }
 
 			return null;
 		}
 
-        private PessoalResponse PessoaFail()
+        private async Task<PessoalResponse> ReturnFail(HttpResponseMessage response)
         {
-			var needLogin = new PessoalResponse();
-			needLogin.StatusCode = 401;
-			return needLogin;
+			if ((int)response.StatusCode == 401)
+				return await FailResponse();
+			else
+			{ 
+				var pessoa = DesJson(response).Result;
+				return new PessoalResponse().NewPessoa(pessoa.StatusCode, pessoa.ResponseMessage); 
+			}
 		}
-    }
+	}
 }

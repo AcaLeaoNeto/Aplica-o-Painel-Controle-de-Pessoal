@@ -10,7 +10,9 @@ namespace SimpleClientServices.Services.ApiBaseSets
 		protected readonly IHttpContextAccessor _httpContextAccessor;
 		protected readonly HttpClient _httpClient;
 		protected readonly IConfiguration _Config;
-		protected string host;
+		protected readonly string host;
+		protected  IRequestCookieCollection Cookies;
+
 
 		public BaseSets(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration config)
 		{
@@ -18,7 +20,9 @@ namespace SimpleClientServices.Services.ApiBaseSets
 			_httpClient = httpClient;
 			_Config = config;
 			host = _Config.GetSection("ApiPessoalUrl").Value;
+			Cookies = _httpContextAccessor.HttpContext.Request.Cookies;
 		}
+
 
 		public HttpRequestMessage RequestApiSet(string RequestMethod, string TargetUri, object RequestContent)
 		{
@@ -49,9 +53,9 @@ namespace SimpleClientServices.Services.ApiBaseSets
 		{
 			var RefRequest =RequestApiSet("Post",
 				$"{host}/api/Login/RefreshLogin",
-				_httpContextAccessor.HttpContext.Request.Cookies["TKA"]);
+				Cookies["TKA"]);
 
-			RefRequest = BearerSet(RefRequest, _httpContextAccessor.HttpContext.Request.Cookies["TKR"]);
+			RefRequest = BearerSet(RefRequest, Cookies["TKR"]);
 
 			var response = await _httpClient.SendAsync(RefRequest);
 

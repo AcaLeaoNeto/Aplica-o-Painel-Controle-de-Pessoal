@@ -6,66 +6,34 @@
     <thead>
         <tr>
             <th>
-                Code
+                Id
             </th>
             <th>
-                Message
+                Nome
             </th>
-            <th>
-                Result
-            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
+        @foreach (var obj in Model.ResponseObject)
+        {
             <tr>
                 <td width="20%">
-                    @Model.StatusCode
+                    @obj.Id
                 </td>
-                <td width="25%">
-                @if (Model.ResponseMessage is not null)
-                {
-                    foreach (var obj in Model.ResponseMessage)
-                    {
-                    @obj;
-                    <br>
-                    }
-                }
+                <td width="50%">
+                    @obj.Name
                 </td>
-
-             <td width="25%">                
-                @if(Model.ResponseObject is not null){
-                    foreach (var obj in Model.ResponseObject)
-                    {  
-                        <br>
-						<p>----------------------</p>
-                        @obj.Id;
-                        <br>
-                        @obj.Name;
-                        <br>
-                        @obj.Setor;
-                        <br>
-                        @obj.DataDeNacimento;
-                        <br>
-                        @obj.Idade;
-                        <br>
-                        @obj.Sexo;
-                        <br>
-						<p>----------------------</p>
-                        <br>
-                    }
-                }
-                </td>
-
-
-			@*      <td>
+                <td>
                     <div class="w-75 btn-group" role="group">
-                        <a class="btn btn-info mx-2" asp-controller="Home" asp-action="Detail" asp-route-id="*">Delathes</a>
-                        <a class="btn btn-danger mx-2" asp-controller="Home" asp-action="ConfirmDelete" asp-route-id="*">Delete</a>
-                        <a class="btn btn-warning mx-2" asp-controller="Home" asp-action="Editar" asp-route-id="*">Editar</a>
-                        <a class="btn btn-dark mx-2" asp-controller="Home" asp-action="Desativar" asp-route-id="*">Desativar</a>
+                        <a class="btn btn-info mx-2" asp-controller="Pessoal" asp-action="Detail" asp-route-id="@obj.Id">Detalhes</a>
+                        <a class="btn btn-danger mx-2" asp-controller="Pessoal" asp-action="ConfirmDelete" asp-route-id="@obj.Id">Delete</a>
+                        <a class="btn btn-warning mx-2" asp-controller="Pessoal" asp-action="Editar" asp-route-id="@obj.Id">Editar</a>
+                        <a class="btn btn-dark mx-2" asp-controller="Pessoal" asp-action="Desativar" asp-route-id="@obj.Id">Desativar</a>
                     </div>
-				</td>*@
+                </td>
             </tr>
+        }
     </tbody>
 
 </table>
