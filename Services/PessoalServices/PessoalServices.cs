@@ -142,28 +142,28 @@ namespace SimpleClientServices.Services.PessoalServices
 
 
 
-		//public async Task<PessoalResponse> SetPessoa(PessoaSetRequest request)
-		//{
+		public async Task<PessoalResponse> SetPessoa(PessoalDetail request)
+		{
 
-		//	if (Cookies["TKA"] is null || Cookies["TKR"] is null)
-		//		return new PessoalResponse(401);
-
-
-		//	var requestM = RequestApiSet("Put", $"{host}/api/Usuario", request);
-
-		//	requestM = BearerSet(requestM, Cookies["TKA"]);
-
-		//	var response = await _httpClient.SendAsync(requestM);
-
-		//	if (!response.IsSuccessStatusCode)
-		//		return await ReturnFail(response);
+			if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+				return new PessoalResponse().NewPessoa(401);
 
 
-		//	var pessoa = DesJson(response);
+			var requestM = RequestApiSet("Put", $"{host}/api/Usuario", request);
 
-		//	return pessoa.Result;
+			requestM = BearerSet(requestM, Cookies["TKA"]);
 
-		//}
+			var response = await _httpClient.SendAsync(requestM);
+
+			if (!response.IsSuccessStatusCode)
+				return await ReturnFail(response);
+
+
+			var pessoa = DesJson(response);
+
+			return pessoa.Result;
+
+		}
 
 
 

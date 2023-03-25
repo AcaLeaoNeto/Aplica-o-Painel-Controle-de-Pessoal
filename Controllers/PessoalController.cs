@@ -4,6 +4,7 @@ using SimpleClientServices.Models.Login;
 using SimpleClientServices.Models.Pessoal;
 using SimpleClientServices.Services.LoginServices;
 using SimpleClientServices.Services.PessoalServices;
+using System.Reflection;
 using System.Web;
 
 namespace SimpleClientServices.Controllers
@@ -24,33 +25,58 @@ namespace SimpleClientServices.Controllers
             return BaseReturn(result, "Index");
         }
 
-        [HttpGet]
-        public async Task<ActionResult<PessoalResponse>> ConfirmDelete(int id)
+		[HttpGet]
+		public async Task<ActionResult<PessoalResponse>> Detail(int Id)
+		{
+			var result = await _pessoalServices.TakePessoa(Id);
+			return BaseReturn(result, "Detail");
+		}
+
+		[HttpGet]
+        public async Task<ActionResult<PessoalResponse>> ConfirmDelete(int Id)
         {
-            var result = await _pessoalServices.TakePessoa(id);
-            return BaseReturn(result, "ConfirmDelete");
+            return await Detail(Id);
         }
 
         [HttpPost]
-        public async Task<ActionResult<PessoalResponse>> Delete(PessoalResponse reponse)
+        public async Task<ActionResult<PessoalResponse>> Delete(PessoalResponse response)
         {
-            var result = await _pessoalServices.DeletePessoa(reponse.ResponseObject[0].Id) ;
+            var result = await _pessoalServices.DeletePessoa(response.ResponseObject[0].Id);
 
-            var FeedReturn = BaseReturn(result, "ConfirmDelete");
+			var FeedReturn = BaseReturn(result, "Index");
 
             if(FeedReturn.ToString() == "Microsoft.AspNetCore.Mvc.ViewResult")
                 return RedirectToAction("Index");
 
+			TempData["Message"] = "Erro na Execução";
+			return FeedReturn;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<PessoalResponse>> Editar(int Id)
+        {
+            return await Detail(Id);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<PessoalResponse>> PessoaEdit(PessoalResponse response)
+        {
+            var result = await _pessoalServices.SetPessoa(response.ResponseObject[0]);
+            
+            var FeedReturn = BaseReturn(result, "Index");
+
+            if (FeedReturn.ToString() == "Microsoft.AspNetCore.Mvc.ViewResult")
+                return RedirectToAction("Index");
+
+            TempData["Message"] = "Erro na Execução";
             return FeedReturn;
         }
 
-
-
-		private ActionResult BaseReturn(PessoalResponse result, string callFunc)
+        private ActionResult BaseReturn(PessoalResponse result, string callFunc)
         {
 			if (result is null)
 			{
-				return RedirectToAction(callFunc);
+                return RedirectToAction(callFunc);
 			}
 			else if (result.StatusCode == 401)
 			{

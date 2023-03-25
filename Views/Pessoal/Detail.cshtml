@@ -1,0 +1,59 @@
+@model PessoalResponse;
+@{
+    ViewData["Title"] = "Detalhes";
+} 
+<table class="table table-bordered table-striped mb-5" style="width:50%">
+    <tbody>
+        <tr>
+            <td width="16%">
+                Id
+            </td>
+            <td>
+                @Model.ResponseObject[0].Id
+            </td>
+        </tr>
+        <tr>
+            <td width="16%">
+                Nome
+            </td>
+            <td>
+                @Model.ResponseObject[0].Name
+            </td>
+        </tr>
+        <tr>
+            <td width="16%">
+                Nacimento
+            </td>
+            <td>
+                @Model.ResponseObject[0].DataDeNacimento.ToShortDateString()
+            </td>
+        </tr>
+        <tr>
+            <td width="16%">
+                Sexo
+            </td>
+            <td>
+                @Model.ResponseObject[0].Sexo
+            </td>
+		</tr>
+	    <td width="16%">
+		    Setor
+	    </td>
+	    <td>
+		    @Model.ResponseObject[0].Setor
+	    </td>
+	    </tr>
+	    <tr>
+            <td width="16%">
+                Idade
+            </td>
+        <td>
+            @Model.ResponseObject[0].Idade
+        </td>
+        </tr> 
+        <tr>
+
+    </tbody>
+</table>
+<a class="btn btn-secondary" asp-controller="Pessoal" asp-action="Index">Voltar</a>
+

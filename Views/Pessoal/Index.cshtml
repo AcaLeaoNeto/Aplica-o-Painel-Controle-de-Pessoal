@@ -1,6 +1,12 @@
 ﻿@model PessoalResponse;
 @{
     ViewData["Title"] = "Index";
+
+	if (TempData["Message"] is not null)
+	{
+		<br>
+		<h6 style="color:red">@TempData["Message"]</h6>
+	}
 }
 <table class="table table-bordered table-striped" style="width:100%">
     <thead>

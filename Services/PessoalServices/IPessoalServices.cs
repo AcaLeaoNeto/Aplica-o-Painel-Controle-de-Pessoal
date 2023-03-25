@@ -10,7 +10,7 @@ namespace SimpleClientServices.Services.PessoalServices
         public Task<PessoalResponse> TakePessoa(int id);
         //public Task<PessoalResponse> SetPessoaOFF(int id);
         public Task<PessoalResponse> DeletePessoa(int id);
-        //      public Task<PessoalResponse> SetPessoa(PessoaSetRequest request);
+        public Task<PessoalResponse> SetPessoa(PessoalDetail request);
         //      public Task<PessoalResponse> MakePessoa(PessoaRequest request);
     };
 }
