@@ -72,6 +72,53 @@ namespace SimpleClientServices.Controllers
             return FeedReturn;
         }
 
+		[HttpGet]
+		public ActionResult Cadastro()
+		{
+			return View();
+		}
+
+		[HttpPost]
+		public async Task<ActionResult<PessoalResponse>> CadastrarPessoa(PessoaRequest response)
+		{
+			var result = await _pessoalServices.MakePessoa(response);
+
+			var FeedReturn = BaseReturn(result, "Index");
+
+			if (FeedReturn.ToString() == "Microsoft.AspNetCore.Mvc.ViewResult")
+				return RedirectToAction("Index");
+
+			TempData["Message"] = "Erro na Execução";
+			return FeedReturn;
+		}
+
+		[HttpGet]
+		public async Task<ActionResult<PessoalResponse>> Desativar(int Id)
+		{
+			return await Detail(Id);
+		}
+
+		[HttpPost]
+		public async Task<ActionResult<PessoalResponse>> DesativarPessoa(PessoalResponse response)
+		{
+			var result = await _pessoalServices.SetPessoaOFF(response.ResponseObject[0].Id);
+
+			var FeedReturn = BaseReturn(result, "Index");
+
+			if (FeedReturn.ToString() == "Microsoft.AspNetCore.Mvc.ViewResult")
+				return RedirectToAction("Index");
+
+			TempData["Message"] = "Erro na Execução";
+			return FeedReturn;
+		}
+
+        [HttpGet]
+        public async Task<ActionResult<PessoalResponse>> Desativados()
+        {
+            var result = await _pessoalServices.TakePessoalOFF();
+            return BaseReturn(result, "Desativados");
+        }
+
         private ActionResult BaseReturn(PessoalResponse result, string callFunc)
         {
 			if (result is null)

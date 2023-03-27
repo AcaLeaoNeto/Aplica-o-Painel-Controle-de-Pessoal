@@ -22,6 +22,8 @@ namespace SimpleClientServices.Services.PessoalServices
         public async Task<PessoalResponse> TakePessoalON()
         {
 
+			return await PessoalEndPointSet("Get", "/api/Usuario");
+
 			if (Cookies["TKA"] is null || Cookies["TKR"] is null)
 				return new PessoalResponse().NewPessoa(401);
             
@@ -43,33 +45,35 @@ namespace SimpleClientServices.Services.PessoalServices
 
 
 
-		//public async Task<PessoalResponse> TakePessoalOFF()
-		//{
+		public async Task<PessoalResponse> TakePessoalOFF()
+		{
+			return await PessoalEndPointSet("Get", "/api/Usuario/Desativados");
 
-		//	if (Cookies["TKA"] is null || Cookies["TKR"] is null)
-		//		return new PessoalResponse(401);
-
-
-		//	var requestM = RequestApiSet("Get", $"{host}/api/Usuario/Desativados", null);
-
-		//	requestM = BearerSet(requestM, Cookies["TKA"]);
-
-		//	var response = await _httpClient.SendAsync(requestM);
-
-		//	if (!response.IsSuccessStatusCode)
-		//		return await ReturnFail(response);
+			if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+				return new PessoalResponse().NewPessoa(401);
 
 
-		//	var pessoa = DesJson(response);
+			var requestM = RequestApiSet("Get", $"{host}/api/Usuario/Desativados", null);
 
-		//	return pessoa.Result;
+			requestM = BearerSet(requestM, Cookies["TKA"]);
 
-		//}
+			var response = await _httpClient.SendAsync(requestM);
+
+			if (!response.IsSuccessStatusCode)
+				return await ReturnFail(response);
+
+
+			var pessoa = DesJson(response);
+
+			return pessoa.Result;
+
+		}
 
 
 
 		public async Task<PessoalResponse> TakePessoa(int id)
 		{
+			return await PessoalEndPointSet("Get", "/api/Usuario/", id);
 
 			if (Cookies["TKA"] is null || Cookies["TKR"] is null)
 				return new PessoalResponse().NewPessoa(401);
@@ -92,33 +96,37 @@ namespace SimpleClientServices.Services.PessoalServices
 
 
 
-		//public async Task<PessoalResponse> SetPessoaOFF(int id)
-		//{
+		public async Task<PessoalResponse> SetPessoaOFF(int id)
+		{
 
-		//	if (Cookies["TKA"] is null || Cookies["TKR"] is null)
-		//		return new PessoalResponse(401);
+			return await PessoalEndPointSet("Patch", "/api/Usuario/Desativar/", id);
 
-
-		//	var requestM = RequestApiSet("Get", $"{host}/api/Usuario/Desativar/{id}", null);
-
-		//	requestM = BearerSet(requestM, Cookies["TKA"]);
-
-		//	var response = await _httpClient.SendAsync(requestM);
-
-		//	if (!response.IsSuccessStatusCode)
-		//		return await ReturnFail(response);
+			if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+				return new PessoalResponse().NewPessoa(401);
 
 
-		//	var pessoa = DesJson(response);
+			var requestM = RequestApiSet("Patch", $"{host}/api/Usuario/Desativar/{id}", null);
 
-		//	return pessoa.Result;
+			requestM = BearerSet(requestM, Cookies["TKA"]);
 
-		//}
+			var response = await _httpClient.SendAsync(requestM);
+
+			if (!response.IsSuccessStatusCode)
+				return await ReturnFail(response);
+
+
+			var pessoa = DesJson(response);
+
+			return pessoa.Result;
+
+		}
 
 
 
 		public async Task<PessoalResponse> DeletePessoa(int id)
 		{
+			return await PessoalEndPointSet("Delete", "/api/Usuario/", id);
+
 
 			if (Cookies["TKA"] is null || Cookies["TKR"] is null)
                 return new PessoalResponse().NewPessoa(401);
@@ -144,6 +152,7 @@ namespace SimpleClientServices.Services.PessoalServices
 
 		public async Task<PessoalResponse> SetPessoa(PessoalDetail request)
 		{
+			return await PessoalEndPointSet("Put", "/api/Usuario", request);
 
 			if (Cookies["TKA"] is null || Cookies["TKR"] is null)
 				return new PessoalResponse().NewPessoa(401);
@@ -167,29 +176,54 @@ namespace SimpleClientServices.Services.PessoalServices
 
 
 
-		//public async Task<PessoalResponse> MakePessoa(PessoaRequest request)
-		//{
-
-		//	if (Cookies["TKA"] is null || Cookies["TKR"] is null)
-		//		return new PessoalResponse(401);
+		public async Task<PessoalResponse> MakePessoa(PessoaRequest request)
+		{
+			return await PessoalEndPointSet("Post", "/api/Usuario", request);
 
 
-		//	var requestM = RequestApiSet("Post", $"{host}/api/Usuario", request);
-
-		//	requestM = BearerSet(requestM, Cookies["TKA"]);
-
-		//	var response = await _httpClient.SendAsync(requestM);
-
-		//	if (!response.IsSuccessStatusCode)
-		//              return await ReturnFail(response);
+			if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+				return new PessoalResponse().NewPessoa(401);
 
 
-		//	var pessoa = DesJson(response);
+			var requestM = RequestApiSet("Post", $"{host}/api/Usuario", request);
 
-		//	return pessoa.Result;
+			requestM = BearerSet(requestM, Cookies["TKA"]);
 
-		//}
+			var response = await _httpClient.SendAsync(requestM);
 
+			if (!response.IsSuccessStatusCode)
+				return await ReturnFail(response);
+
+
+			var pessoa = DesJson(response);
+
+			return pessoa.Result;
+
+		}
+
+
+		private async Task<PessoalResponse> PessoalEndPointSet(string method, string endCall, object content = null)
+		{
+
+			if (Cookies["TKA"] is null || Cookies["TKR"] is null)
+				return new PessoalResponse().NewPessoa(401);
+
+
+			var requestM = content is int ? RequestApiSet(method, host+endCall+content, null)  :
+															RequestApiSet(method, host+endCall, content);
+
+			requestM = BearerSet(requestM, Cookies["TKA"]);
+
+			var response = await _httpClient.SendAsync(requestM);
+
+			if (!response.IsSuccessStatusCode)
+				return await ReturnFail(response);
+
+
+			var pessoa = DesJson(response);
+
+			return pessoa.Result;
+		}
 
 
 		private async Task<PessoalResponse> FailResponse()

@@ -1,0 +1,37 @@
+﻿@model PessoalResponse;
+@{
+    ViewData["Title"] = "Desativados";
+
+	if (TempData["Message"] is not null)
+	{
+		<br>
+		<h6 style="color:red">@TempData["Message"]</h6>
+	}
+}
+<table class="table table-bordered table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Nome
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var obj in Model.ResponseObject)
+        {
+            <tr>
+                <td width="20%">
+                    @obj.Id
+                </td>
+                <td width="80%">
+                    @obj.Name
+                </td>
+            </tr>
+        }
+    </tbody>
+    
+</table>
+<a class="btn btn-secondary" asp-controller="Pessoal" asp-action="Index">Voltar</a>

@@ -1,0 +1,24 @@
+ @model PessoalResponse;
+@{
+    ViewData["Title"] = "Desativar";
+} 
+
+<form method="Post" asp-controller="Pessoal" asp-action="DesativarPessoa">
+	<input type="hidden" asp-for="ResponseObject[0].Id" value="@Model.ResponseObject[0].Id"><br><br>
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+			<h2 class="text-primary">Desativar Funcionario</h2>
+			<hr />
+		</div>
+        <div class="mb-3">
+			<label asp-for="ResponseObject[0].Id"></label>
+			<input asp-for="ResponseObject[0].Id" disabled class="form-control" />
+	    </div>
+        <div class="mb-5">
+			<label asp-for="ResponseObject[0].Name"></label>
+			<input asp-for="ResponseObject[0].Name" disabled class="form-control" />
+		</div>
+		<button type="submit" class="btn btn-danger">Desativar</button>
+        <a class="btn btn-secondary" asp-controller="Pessoal" asp-action="Index">Voltar</a>
+    </div>
+</form>

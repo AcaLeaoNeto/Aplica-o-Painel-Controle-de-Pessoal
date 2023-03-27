@@ -1,0 +1,51 @@
+@model PessoaRequest;
+@{  
+	ViewData["Title"] = "Cadastro de Pessoal";
+    //string data = Model.DataDeNacimento.ToString("yyyy'-'MM'-'dd");
+}
+
+<form method="post" asp-controller="Pessoal" asp-action="CadastrarPessoa">
+	<div class="border p-3 mt-4">
+		<div class="row pb-2">
+			<h2 class="text-primary">Cadastrar Funcionario</h2>
+			<hr />
+		</div>
+		<div class="mb-3">
+			<label asp-for="Name"></label><br>
+			<input type="text" asp-for="Name" required>
+			@*<span asp-validation-for="NomeDoContato" class="text-danger"></span>*@
+		</div>
+		<div class="mb-3">
+			<label asp-for="DataDeNacimento"></label><br>
+			<input type="date" asp-for="DataDeNacimento" required>
+			@*<span asp-validation-for="DataDeNacimento" class="text-danger"></span>*@
+		</div>
+		<div class="mb-5">	
+			<label asp-for="Sexo"></label><br>
+			<select asp-for="Sexo" required>
+				<option value="Masculino">Masculino</option>
+				<option value="Feminino">Feminino</option>
+			</select>
+		</div>
+		<div class="mb-5">
+			<label asp-for="Setor"></label><br>
+			<select asp-for="Setor" required>
+				<option value="Financeiro">Financeiro</option>
+				<option value="Recusrso_Humanos">Recusrso_Humanos</option>
+				<option value="Logística">Logística</option>
+				<option value="Escritório">Escritório</option>
+				<option value="Produção">Produção</option>
+				<option value="Administração">Administração</option>
+				<option value="Direção">Direção</option>
+			</select>
+		</div>
+		<button type="submit" class="btn btn-primary">Cadastro</button>
+		<a asp-controller="Pessoal" asp-action="Index" class="btn btn-secondary">Voltar</a>
+	</div>
+</form>
+
+@section Scripts{
+	@{
+		<partial name="_ValidationScriptsPartial" />
+	}
+}
