@@ -32,5 +32,14 @@ namespace SimpleClientServices.Controllers
 			return RedirectToAction("Index");
 		}
 
-	}
+        [HttpGet]
+        public async Task<ActionResult> Logoff()
+        {
+            HttpContext.Response.Cookies.Delete("TKR");
+            HttpContext.Response.Cookies.Delete("TKA");
+
+            return RedirectToAction("Index");
+        }
+
+    }
 }

@@ -30,10 +30,9 @@
                     @obj.Name
                 </td>
                 <td width="10%">
-                    <form method="Post" asp-controller="Pessoal" asp-action="Delete">
+                     <form method="Post" asp-controller="Pessoal" asp-action="Delete">
                         <input type="hidden" asp-for="ResponseObject[0].Id" value="@obj.Id">
-                        <button type="submit" class="btn btn-danger">Deletar</button>
-					    @*<a class="btn btn-danger mx-2" asp-controller="Pessoal" asp-action="ConfirmDelete" asp-route-id="@obj.Id">Apagar</a>*@
+						<button type="submit" class="btn btn-danger">Deletar</button>
                     </form>
                 </td>
             </tr>
