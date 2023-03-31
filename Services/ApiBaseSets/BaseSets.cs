@@ -43,11 +43,12 @@ namespace SimpleClientServices.Services.ApiBaseSets
 				RequestUri = new Uri(TargetUri),
 				Content = contentObj
 			};
-
+			
 			return request;
 		}
 
 
+			
 
 		public async Task<T> RefreshAcess()
 		{
@@ -105,4 +106,5 @@ namespace SimpleClientServices.Services.ApiBaseSets
 		}
 
 	}
-}
+}	
+	

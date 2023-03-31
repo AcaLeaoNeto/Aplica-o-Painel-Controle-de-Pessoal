@@ -43,10 +43,9 @@ namespace SimpleClientServices.Services.LoginServices
 
 			if(response is null)
 				return false;
-			else
-				CreateCookieLogToken(response);
 			
 
+			CreateCookieLogToken(response);
 			return true;
 		}
 

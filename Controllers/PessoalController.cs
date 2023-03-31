@@ -122,13 +122,11 @@ namespace SimpleClientServices.Controllers
         private ActionResult BaseReturn(PessoalResponse result, string callFunc)
         {
 			if (result is null)
-			{
                 return RedirectToAction(callFunc);
-			}
-			else if (result.StatusCode == 401)
-			{
+			
+			if (result.StatusCode == 401)
 				return RedirectToAction("Index", "Login");
-			}
+			
 			return View(result);
 		}
     }

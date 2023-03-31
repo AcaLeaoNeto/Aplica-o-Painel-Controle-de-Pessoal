@@ -93,27 +93,26 @@ namespace SimpleClientServices.Services.PessoalServices
 
 		private async Task<PessoalResponse> FailResponse()
         {
-			var result = await _loginServices.ExpToken();
-			if (!result)
-			{
-				_httpContextAccessor.HttpContext.Response.Cookies.Delete("TKR");
-				_httpContextAccessor.HttpContext.Response.Cookies.Delete("TKA");
-				
-                return new PessoalResponse().NewPessoa(401);
-            }
+			//var result = await _loginServices.ExpToken();
+			if (await _loginServices.ExpToken())
+				return null;
 
-			return null;
+
+			_httpContextAccessor.HttpContext.Response.Cookies.Delete("TKR");
+			_httpContextAccessor.HttpContext.Response.Cookies.Delete("TKA");
+				
+            return new PessoalResponse().NewPessoa(401);
 		}
 
         private async Task<PessoalResponse> ReturnFail(HttpResponseMessage response)
         {
 			if ((int)response.StatusCode == 401)
 				return await FailResponse();
-			else
-			{ 
-				var pessoa = DesJson(response).Result;
-				return new PessoalResponse().NewPessoa(pessoa.StatusCode, pessoa.ResponseMessage); 
-			}
+			
+
+			var pessoa = DesJson(response).Result;
+			return new PessoalResponse().NewPessoa(pessoa.StatusCode, pessoa.ResponseMessage); 
+			
 		}
 	}
 }
